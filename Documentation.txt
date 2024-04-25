@@ -1,0 +1,12 @@
+pip install -U langchain-community
+pip install langchain-openai
+pip install faster_whisper
+pip install SpeechRecognition
+pip install pyttsx3
+pip install pyaudio
+
+ollama run dolphin-llama3
+ollama run phi3
+ollama run cas/minicpm-3b-openhermes-2.5-v2:latest
+
+
