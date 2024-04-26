@@ -170,7 +170,7 @@ while True:
             voice.say(summarized_response)
             voice.setProperty('rate', 145)  # speed of reading 145 
             voice.runAndWait()
-
+            search_text_js=""
         elif "search in wikipedia" in user_input.lower():
             wiki_text =llm_chain.predict(human_input="Extract simple sentence from "+user_input+ " for a search engine Search query. Reply in format of dictionary that contains Search Query")
             
@@ -187,6 +187,7 @@ while True:
             voice.say(summarized_response)
             voice.setProperty('rate', 145)  # speed of reading 145 
             voice.runAndWait()
+            Response_of_wiki_Search=""
         elif "take a note" in user_input.lower():
 
             # note_text = input("What do you want to note? ")
