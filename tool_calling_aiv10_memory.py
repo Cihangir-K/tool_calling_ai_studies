@@ -13,6 +13,9 @@ import pyttsx3
 import os
 import time
 
+import json
+
+
 # HEADER = '\033[95m'
 # MAVI = '\033[94m'
 # YESIL = '\033[92m'
@@ -94,8 +97,8 @@ def wikipedia(text):
 
 
 template = """You are a chatbot named jarvis and having a conversation with a human.
-If human wants you to wikipedia search, your aim is extract one or two word to make search in wikipedia. Formulate a standalone answer. Do NOT answer the question. 
-If human wants you to search in internet, your aim is find out that what human want to search with this sentence?  Formulate a standalone simple answer. Do NOT answer the question.
+If human wants you to search in wikipedia, your aim is to extract words to make search in wikipedia. Since it is directly used in search engine, except the Search query: do NOT say anything else. 
+If human wants you to search in internet, your aim is to find out that what human want to search with this sentence?  Formulate a standalone simple answer. Do NOT answer the question.
 
 
 
@@ -112,12 +115,12 @@ prompt = PromptTemplate(
 )
 memory = ConversationBufferMemory(memory_key="chat_history")
 
-llm = ChatOllama(model=model_name)
+llm = ChatOllama(model=model_name,temperature=0)
 llm_chain = LLMChain(
     llm=llm,
     prompt=prompt,
     verbose=True,
-    memory=memory,
+    memory=memory
 )
 
 
@@ -125,7 +128,7 @@ while True:
 
     # Mikrofondan ses al
     with sr.Microphone() as source:
-        recognizer.adjust_for_ambient_noise(source)  # Calibrate the recognizer
+        recognizer.adjust_for_ambient_noise(source,duration=1.5)  # Calibrate the recognizer
         print("Listened for ambient noise ...")
         # beep()
         print('\033[91m'+"Dinliyorum...")
@@ -149,11 +152,17 @@ while True:
         # Check for commands (remove search functionality)
         if "search in internet" in user_input.lower():
 
-            search_text =llm_chain.predict(human_input="what user want to search in this sentence?  Formulate a standalone simple answer. Do NOT answer the question. Sentence is: "+user_input+ " Do NOT sanything else.")
-            print("\n"+"Search_text: ",search_text + "\n")
+            # search_text =llm_chain.predict(human_input="what user want to search in this sentence?  Formulate a standalone simple answer. Do NOT answer the Human input. Sentence is: "+user_input+ " Do NOT sanything else.")
+            # search_text =llm_chain.predict(human_input="Extract simple sentence from "+user_input+ " for a search engine Search query. Since it will be used to directly send to search engine, do NOT sanything else.")
+            search_text =llm_chain.predict(human_input="Extract simple sentence from "+user_input+ " for a search engine Search query. Reply in format of dictionary that contains Search Query")
 
-            search_response =search_duck(search_text)
-            summarized_response = llm_chain.predict(human_input="summarize the "+search_response+ " according to "+user_input+" in one sentence")
+            print("\n"+"Search_text: ",search_text + "\n")
+            search_text_js = json.loads(search_text)
+            print("\n"+"Search_query: ",search_text_js.get("Search Query") + "\n")
+
+            search_response =search_duck(search_text_js.get("Search Query"))
+            summarized_response = llm_chain.predict(human_input="summarize the "+search_response+ " in one sentence")
+
             print('\033[4m'+"search_response: ",search_response+ "\n")
             print('\033[0m'+"summarized_response: ",summarized_response+ "\n")
 
@@ -162,12 +171,18 @@ while True:
             voice.setProperty('rate', 145)  # speed of reading 145 
             voice.runAndWait()
 
-        elif "wikipedia search" in user_input.lower():
-            wiki_text =llm_chain.predict(human_input="Your aim is extract one word to make search in wikipedia. Sentence is: "+user_input+ " Do NOT sanything else.")
+        elif "search in wikipedia" in user_input.lower():
+            wiki_text =llm_chain.predict(human_input="Extract simple sentence from "+user_input+ " for a search engine Search query. Reply in format of dictionary that contains Search Query")
             
-            print("wiki_text: ",wiki_text)
-            Response_of_wiki_Search=wikipedia(wiki_text)
-            summarized_response=llm_chain.predict(human_input="summarize " +Response_of_wiki_Search+" in one sentence.") 
+            print("\n"+"Search_text: ",wiki_text + "\n")
+            wiki_text_js = json.loads(wiki_text)
+            print("\n"+"Search_query: ",wiki_text_js.get("Search Query") + "\n")
+
+            Response_of_wiki_Search=wikipedia(wiki_text_js.get("Search Query"))
+
+            summarized_response=llm_chain.predict(human_input="summarize " +Response_of_wiki_Search) 
+
+            print('\033[0m'+"summarized_response: ",summarized_response+ "\n")
             voice.setProperty('voice', voices[0].id) # türkçe dil için 1 ingilizce için 0erkek ve 2bayan
             voice.say(summarized_response)
             voice.setProperty('rate', 145)  # speed of reading 145 
