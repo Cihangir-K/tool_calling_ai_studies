@@ -172,7 +172,7 @@ while True:
             voice.say(summarized_response)
             voice.setProperty('rate', 145)  # speed of reading 145 
             voice.runAndWait()
-        elif "take note" in user_input.lower():
+        elif "take a note" in user_input.lower():
 
             # note_text = input("What do you want to note? ")
 
