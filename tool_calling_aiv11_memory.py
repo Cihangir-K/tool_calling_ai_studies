@@ -185,7 +185,7 @@ while True:
 
                 Response_of_wiki_Search=wikipedia(wiki_text_js.get("Search Query"))
 
-                summarized_response=llm_chain.predict(human_input="summarize " +Response_of_wiki_Search) 
+                summarized_response=llm_chain.predict(human_input="summarize the " +Response_of_wiki_Search+ " in one sentence") 
 
                 print('\033[0m'+"summarized_response: ",summarized_response+ "\n")
                 voice.setProperty('voice', voices[0].id) # türkçe dil için 1 ingilizce için 0erkek ve 2bayan
