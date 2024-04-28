@@ -1,6 +1,8 @@
 from crewai import Agent, Task, Process, Crew
 from langchain_community.llms import Ollama
 from langchain_community.tools import DuckDuckGoSearchRun
+from langchain_community.tools import WikipediaQueryRun
+from langchain_community.utilities import WikipediaAPIWrapper
 from langchain.tools import tool
 from langchain.agents import load_tools
 from datetime import datetime
@@ -21,7 +23,7 @@ def wikipedia(text):
     print("\n"+"WIKI Result :",wikipedia.run(text)+"\n")
     return wikipedia.run(text)
 
-@tool
+@tool('save_to_note')
 def Save_to_note(text):
     """
     To Save summary info to a note
@@ -41,10 +43,10 @@ human_tools = load_tools(["human"])
 model_name = "dolphin-llama3"  # Replace with your desired Ollama model ollama run dolphin-llama3
 # model_name ="cas/minicpm-3b-openhermes-2.5-v2:latest" #ollama run cas/minicpm-3b-openhermes-2.5-v2:latest
 
-
+temperature=0.2
 
 # To Load Local models through Ollama
-llm_model = Ollama(model=model_name,temperature=0)
+llm_model = Ollama(model=model_name)
 
 
 Human_goal=input("your goal: ")
@@ -68,7 +70,7 @@ researcher = Agent(
     verbose=True,
     allow_delegation=False,
     llm=llm_model,
-    max_iter=2,
+    max_iter=5,
     memory=True,
     tools=[search_tool]+human_tools,
 )
