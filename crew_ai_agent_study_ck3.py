@@ -40,8 +40,8 @@ human_tools = load_tools(["human"])
 
 
 # Define Ollama model
-model_name = "dolphin-llama3"  # Replace with your desired Ollama model ollama run dolphin-llama3
-# model_name ="cas/minicpm-3b-openhermes-2.5-v2:latest" #ollama run cas/minicpm-3b-openhermes-2.5-v2:latest
+# model_name = "dolphin-llama3"  # Replace with your desired Ollama model ollama run dolphin-llama3
+model_name ="cas/minicpm-3b-openhermes-2.5-v2:latest" #ollama run cas/minicpm-3b-openhermes-2.5-v2:latest
 
 temperature=0.2
 
@@ -86,7 +86,7 @@ reviewver = Agent(
 
 writer = Agent(
     role="writer",
-    goal="write summarized data to file.",
+    goal="write summarized data to file. that you gather from reviewver",
     backstory="""You are a writer.""",
     verbose=True,
     allow_delegation=False,
@@ -122,7 +122,7 @@ task3 = Task(
 task4 = Task(
     description="""Save the summary of data to notes.txt file
     """,
-    expected_output="A Summary about info",
+    expected_output="A Summary about info as string",
     agent=writer,
 )
 
