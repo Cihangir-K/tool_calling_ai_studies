@@ -121,12 +121,12 @@ task4 = Task(
     description="""Save the summary of data to notes.txt file
     """,
     expected_output="A Summary about info",
-    agent=reviewver,
+    agent=writer,
 )
 
 crew = Crew(
-    agents=[po, researcher, reviewver,writer],
-    tasks=[task1, task2, task3,task4],
+    agents=[po, researcher, reviewver, writer],
+    tasks=[task1, task2, task3, task4],
     verbose=2,
     process=Process.sequential,
 )
