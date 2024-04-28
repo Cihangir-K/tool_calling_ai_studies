@@ -44,8 +44,8 @@ model_name = "dolphin-llama3"  # Replace with your desired Ollama model ollama r
 
 
 # To Load Local models through Ollama
-llm_model = Ollama(model=model_name)
-coding_model = Ollama(model=model_name)
+llm_model = Ollama(model=model_name,temperature=0)
+
 
 Human_goal=input("your goal: ")
 
@@ -63,11 +63,11 @@ researcher = Agent(
     role="Researcher",
     goal="search in internet to find the best information",
     backstory="""You are a master of internet searching, with a profound knowledge DuckDuckGoSearchRun.
-    For search, orrect format is {'search_query': 'Your query here'}.
+    For search, correct format is giving the search_query as string.
     """,
     verbose=True,
     allow_delegation=False,
-    llm=coding_model,
+    llm=llm_model,
     max_iter=5,
     memory=True,
     tools=[search_tool]+human_tools,
