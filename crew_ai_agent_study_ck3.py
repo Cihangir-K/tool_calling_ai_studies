@@ -38,8 +38,8 @@ human_tools = load_tools(["human"])
 
 
 # Define Ollama model
-# model_name = "dolphin-llama3"  # Replace with your desired Ollama model ollama run dolphin-llama3
-model_name ="cas/minicpm-3b-openhermes-2.5-v2:latest" #ollama run cas/minicpm-3b-openhermes-2.5-v2:latest
+model_name = "dolphin-llama3"  # Replace with your desired Ollama model ollama run dolphin-llama3
+# model_name ="cas/minicpm-3b-openhermes-2.5-v2:latest" #ollama run cas/minicpm-3b-openhermes-2.5-v2:latest
 
 
 
@@ -112,7 +112,7 @@ task2 = Task(
 )
 
 task3 = Task(
-    description="""Check the data if its correct. 
+    description="""Create a summary about info. 
     """,
     expected_output="A Summary about info",
     agent=reviewver,
