@@ -1,5 +1,6 @@
 Python 3.11.9
 
+tool_calling_aiv11_memory.py
 this is a study for calling a tool.
 it uses a ConversationBufferMemory for conversational memory. 
 faster_whisper is used for speech to text and pttsx3 tor text to speech ( you say wake_word +your prompt)
