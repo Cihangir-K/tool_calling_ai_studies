@@ -266,7 +266,7 @@ if 'yes' in what_do_you_want :
                     print(f"Bot: {response_for_note}")
                     text=response_for_note
                     take_a_note(text)
-                    
+
                     voice.setProperty('voice', voices[ses_turu].id) # türkçe dil için 1 ingilizce için 0erkek ve 2bayan
                     voice.say("Note taken")
                     voice.setProperty('rate', 145)  # speed of reading 145 
@@ -343,7 +343,7 @@ else:
                     print("Error:", e)
 
                 
-            elif "take a note" or "take a note." in only_user_input:
+            elif "take a note" in only_user_input or "take a note." in only_user_input:
                 try:
                     # note_text = input("What do you want to note? ")
 
