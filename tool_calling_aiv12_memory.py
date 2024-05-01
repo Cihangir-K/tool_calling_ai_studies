@@ -4,6 +4,10 @@ from langchain.memory import ConversationBufferMemory
 from langchain_core.prompts import PromptTemplate
 from langchain_community.tools import DuckDuckGoSearchRun
 
+from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain.utilities.tavily_search import TavilySearchAPIWrapper
+
+
 from langchain_community.tools import WikipediaQueryRun
 from langchain_community.utilities import WikipediaAPIWrapper
 
@@ -136,6 +140,21 @@ def search_duck(text):
     print("\n"+"DUCK DUCK results: ",result+ "\n")
     return result
 
+
+def tavily_search(text):
+
+    # api_key=os.getenv('TAVILY_API_KEY')
+    api_key=os.environ['TAVILY_API_KEY']
+    # print("api key: ",api_key)
+
+    search= TavilySearchAPIWrapper(tavily_api_key=api_key)
+    tool = TavilySearchResults(api_wrapper=search)
+
+    result=tool.invoke({"query": text})
+    
+    print("\n"+"Tavily Search results: "+result+ "\n")
+    return result
+
 def wikipedia(text):
     wikipedia = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper())
     print("\n"+"WIKI Result :",wikipedia.run(text)+"\n")
@@ -216,7 +235,8 @@ if 'yes' in what_do_you_want :
                     search_text_js = json.loads(search_text)
                     print("\n"+"Search_query: ",search_text_js.get("Search Query") + "\n")
 
-                    search_response =search_duck(search_text_js.get("Search Query"))
+                    # search_response =search_duck(search_text_js.get("Search Query"))
+                    search_response =tavily_search(search_text_js.get("Search Query"))
                     summarized_response = llm_chain.predict(human_input=f"""summarize the :"{search_response}" in one sentence""")
 
                     print('\033[4m'+"search_response: ",search_response+ "\n")
@@ -255,7 +275,7 @@ if 'yes' in what_do_you_want :
                     print("Error:", e)
 
                 
-            elif "take a note" or "take a note." in only_user_input:
+            elif "take a note" in only_user_input or "take a note." in only_user_input:
                 # print("take a note geldi.")
                 try:
                     # note_text = input("What do you want to note? ")
@@ -310,13 +330,14 @@ else:
                 try:
                     # search_text =llm_chain.predict(human_input="what user want to search in this sentence?  Formulate a standalone simple answer. Do NOT answer the Human input. Sentence is: "+user_input+ " Do NOT sanything else.")
                     # search_text =llm_chain.predict(human_input="Extract simple sentence from "+user_input+ " for a search engine Search query. Since it will be used to directly send to search engine, do NOT sanything else.")
-                    search_text =llm_chain.predict(human_input="Extract simple sentence from "+user_input+ " for a search engine Search query. Reply in format of dictionary that contains Search Query")
+                    search_text =llm_chain.predict(human_input="Extract simple sentence from ;"+user_input+ """. for a search engine Search query. Reply in format of dictionary that contains Search Query. response must be like ({"Search Query": "ai answer"}). Do NOT answer the question.""")
 
                     print("\n"+"Search_text: ",search_text + "\n")
                     search_text_js = json.loads(search_text)
                     print("\n"+"Search_query: ",search_text_js.get("Search Query") + "\n")
 
                     search_response =search_duck(search_text_js.get("Search Query"))
+                    # search_response =tavily_search(str(search_text_js.get("Search Query")))
                     summarized_response = llm_chain.predict(human_input="summarize the "+search_response+ " in one sentence")
 
                     print('\033[4m'+"search_response: ",search_response+ "\n")
